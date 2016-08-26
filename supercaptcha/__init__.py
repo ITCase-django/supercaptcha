@@ -196,6 +196,7 @@ class CaptchaField(forms.MultiValueField):
         'wrong': ugettext_lazy(ERROR_MESSAGE),
         'required': ugettext_lazy(u'This field is required.'),
         'internal': ugettext_lazy(u'Internal error.'),
+        'debug_cache': ugettext_lazy(u'Check youre cache settings'),
         }
 
     def __init__(self, *args, **kwargs):
@@ -219,7 +220,11 @@ class CaptchaField(forms.MultiValueField):
 
         cached_text = cache.get('%s-%s' % (PREFIX, code))
         cache.set('%s-%s' % (PREFIX, code), generate_text(), 600)
+
         if not cached_text:
+            from django.conf import settings as django_settings
+            if django_settings.DEBUG:
+                raise forms.ValidationError(self.error_messages['debug_cache'])
             raise forms.ValidationError(self.error_messages['internal'])
 
         if text.lower() != cached_text.lower():
