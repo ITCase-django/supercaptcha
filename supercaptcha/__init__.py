@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 from random import choice, random
 
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -44,7 +43,10 @@ REFRESH_LINK_TEXT = ugettext_lazy(settings.REFRESH_LINK_TEXT)
 
 def get_current_code():
     if not hasattr(_thread_locals, CODE_ATTR_NAME):
-        code = os.urandom(16).encode('hex')
+        # code = os.urandom(16).encode('hex')
+        from binascii import hexlify
+        from os import urandom
+        code = hexlify(urandom(16))
         setattr(_thread_locals, CODE_ATTR_NAME, code)
     return getattr(_thread_locals, CODE_ATTR_NAME)
 
@@ -104,8 +106,8 @@ def draw(request, code):
             get_color = lambda: color
         position = [(WIDTH - text_size[0]) / 2, 0]
         shift_max = HEIGHT - text_size[1]
-        shift_min = shift_max / 4
-        shift_max = shift_max * 3 / 4
+        shift_min = int(shift_max / 4)
+        shift_max = int(shift_max * 3 / 4)
         for char in text:
             l_size = font.getsize(char)
             try:
