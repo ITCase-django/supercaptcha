@@ -19,6 +19,14 @@ All you need, to get captcha working is properly configured cache backend and a 
 
     url(r'^captcha/(?P<code>[\da-f]{32})/$', 'supercaptcha.draw')
 
+Add applications to your INSTALLED_APPS in settings.py:
+    
+    INSTALLED_APPS = [
+        ...
+        'supercaptcha',
+        ...
+    ]
+
 And `PIL` installed
 
 

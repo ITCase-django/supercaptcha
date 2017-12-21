@@ -1,0 +1,6 @@
+<img src="{{ widget.src }}?{{ widget.rnd }}" alt="{{ widget.alt }}" width="{{ widget.width }}" height="{{ widget.height }}" />
+<a onclick="var img=this.previousSibling; if(img.nodeType==document.TEXT_NODE){img=img.previousSibling}; img.src=img.src.substring(0,img.src.indexOf('?')+1)+Math.random(); return false;"
+   href="#refresh" class="supercaptcha-refresh">
+    {{ widget.refresh_text }}
+</a>
+<input {{ widget.input_attrs }} maxlength="{{ widget.length }}" />

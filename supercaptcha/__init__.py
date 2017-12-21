@@ -136,15 +136,16 @@ def draw(request, code):
 class CaptchaImageWidget(forms.Widget):
 
     if REFRESH:
-        template = HTML_TEMPLATE_WITH_REFRESH
+        template_name = HTML_TEMPLATE_WITH_REFRESH
     else:
-        template = HTML_TEMPLATE
+        template_name = HTML_TEMPLATE
 
-    def render(self, name, value, attrs=None):
+    def get_context(self, name, value, attrs):
         code = get_current_code()
         empty_current_code()
-        input_attrs = self.build_attrs(attrs, type='text', name=name)
-        template_kwargs = {
+        input_attrs = self.build_attrs(attrs, {'type': 'text',
+                                               'name': name})
+        addition_context = {
             'src': reverse(draw, kwargs={'code': code}),
             'input_attrs': flatatt(input_attrs),
             'alt': settings.ALT,
@@ -154,7 +155,9 @@ class CaptchaImageWidget(forms.Widget):
             'rnd': random(),
             'refresh_text': REFRESH_LINK_TEXT
         }
-        return mark_safe(self.template % template_kwargs)
+        context = super().get_context(name, value, attrs)
+        context['widget'].update(addition_context)
+        return context
 
 
 class HiddenCodeWidget(forms.HiddenInput):
